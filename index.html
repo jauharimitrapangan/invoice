@@ -13,6 +13,9 @@
             body { background: white; padding: 0; }
             .print-container { box-shadow: none !important; border: none !important; margin: 0 !important; width: 100% !important; }
         }
+        /* Custom scrollbar for customer list */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen pb-20">
@@ -25,13 +28,13 @@
                 </div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight">Jauhari Mitra Pangan</h1>
-                    <p class="text-[10px] opacity-80 uppercase tracking-widest">Internal Invoice System</p>
+                    <p class="text-[10px] opacity-80 uppercase tracking-widest text-white">Sistem Invoice Otomatis</p>
                 </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="window.print()" class="bg-white text-green-700 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-green-50">Cetak PDF</button>
-                <button onclick="document.getElementById('settings-modal').classList.remove('hidden')" class="bg-green-800 p-2 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
+                <button onclick="window.print()" class="bg-white text-green-700 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-green-50 transition-colors">Cetak PDF</button>
+                <button onclick="document.getElementById('settings-modal').classList.remove('hidden')" class="bg-green-800 p-2 rounded-lg hover:bg-green-900 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 </button>
             </div>
         </div>
@@ -43,169 +46,273 @@
         <div class="lg:w-1/3 space-y-4 no-print">
             <div class="bg-white rounded-xl shadow-sm p-5 border border-slate-200">
                 <h3 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
-                    <span class="bg-green-100 text-green-700 p-1 rounded text-xs">1</span> Informasi Dasar
+                    <span class="bg-green-100 text-green-700 p-1 rounded text-xs">1</span> Informasi Pelanggan
                 </h3>
                 <div class="grid gap-3">
-                    <input type="text" id="inv-no" class="w-full bg-slate-50 border p-2 rounded-lg text-sm" placeholder="No Invoice">
-                    <input type="date" id="inv-date" class="w-full bg-slate-50 border p-2 rounded-lg text-sm">
-                    <div id="manual-inputs" class="space-y-2 border-t pt-2">
-                        <input type="text" id="m-nama" placeholder="Nama Pelanggan" class="w-full border p-2 rounded text-sm" oninput="updatePreview()">
-                        <textarea id="m-alamat" placeholder="Alamat" class="w-full border p-2 rounded text-sm" oninput="updatePreview()"></textarea>
-                        <input type="text" id="m-hp" placeholder="No HP/WA" class="w-full border p-2 rounded text-sm" oninput="updatePreview()">
+                    <div class="flex gap-2">
+                        <input type="text" id="inv-no" class="w-1/2 bg-slate-50 border p-2 rounded-lg text-sm" placeholder="No Invoice">
+                        <input type="date" id="inv-date" class="w-1/2 bg-slate-50 border p-2 rounded-lg text-sm">
+                    </div>
+                    
+                    <div class="relative">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Cari atau Input Baru</label>
+                        <select id="cust-db" onchange="pickCustomer()" class="w-full bg-green-50 border-2 border-green-100 p-2 rounded-lg text-sm font-semibold text-green-800 outline-none">
+                            <option value="">-- Pelanggan Baru --</option>
+                        </select>
+                    </div>
+
+                    <div id="customer-inputs" class="space-y-2 border-t pt-2 mt-1">
+                        <input type="text" id="m-nama" placeholder="Nama Lengkap" class="w-full border p-2 rounded-lg text-sm outline-none focus:border-green-500" oninput="updatePreview()">
+                        <textarea id="m-alamat" placeholder="Alamat Lengkap" class="w-full border p-2 rounded-lg text-sm outline-none focus:border-green-500" rows="2" oninput="updatePreview()"></textarea>
+                        <input type="text" id="m-hp" placeholder="Nomor WhatsApp" class="w-full border p-2 rounded-lg text-sm outline-none focus:border-green-500" oninput="updatePreview()">
                     </div>
                 </div>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm p-5 border border-slate-200">
                 <h3 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
-                    <span class="bg-green-100 text-green-700 p-1 rounded text-xs">2</span> Item Produk
+                    <span class="bg-green-100 text-green-700 p-1 rounded text-xs">2</span> Daftar Pesanan
                 </h3>
                 <div id="items-list" class="space-y-3">
-                    <div class="item-row p-3 bg-slate-50 rounded-lg border border-slate-100">
-                        <input type="text" placeholder="Nama Barang" class="i-name w-full mb-2 p-1 border-b bg-transparent text-sm font-medium outline-none" oninput="updatePreview()">
+                    <div class="item-row p-3 bg-slate-50 rounded-lg border border-slate-100 relative group">
+                        <input type="text" placeholder="Nama Produk" class="i-name w-full mb-2 p-1 border-b bg-transparent text-sm font-medium outline-none focus:border-green-500" oninput="updatePreview()">
                         <div class="flex gap-2">
-                            <input type="number" placeholder="Qty" class="i-qty w-1/4 p-1 border-b bg-transparent text-sm outline-none" oninput="calculate()">
-                            <select class="i-satuan w-1/4 p-1 border-b bg-transparent text-[10px] outline-none" onchange="updatePreview()">
+                            <input type="number" placeholder="Qty" class="i-qty w-1/4 p-1 border-b bg-transparent text-sm outline-none focus:border-green-500" oninput="calculate()">
+                            <select class="i-satuan w-1/4 p-1 border-b bg-transparent text-[10px] outline-none focus:border-green-500" onchange="updatePreview()">
                                 <option value="Kg">Kg</option>
                                 <option value="Pcs">Pcs</option>
                                 <option value="Iket">Iket</option>
                                 <option value="Liter">Liter</option>
                                 <option value="Box">Box</option>
                             </select>
-                            <input type="number" placeholder="Harga" class="i-price w-2/4 p-1 border-b bg-transparent text-sm outline-none text-right" oninput="calculate()">
+                            <input type="number" placeholder="Harga" class="i-price w-2/4 p-1 border-b bg-transparent text-sm outline-none text-right focus:border-green-500" oninput="calculate()">
                         </div>
                     </div>
                 </div>
                 <button onclick="addItem()" class="w-full mt-3 py-2 border-2 border-dashed border-slate-200 rounded-lg text-xs text-slate-400 font-bold hover:border-green-300 hover:text-green-600 transition-all">+ TAMBAH BARANG</button>
             </div>
 
-            <button onclick="saveToSheet()" id="btn-save" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg transition-all">SIMPAN REKAPAN</button>
-            <p id="status" class="text-center text-xs font-medium"></p>
+            <div class="space-y-2">
+                <button onclick="saveToSheet()" id="btn-save" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V4a1 1 0 10-2 0v7.586l-1.293-1.293z" /><path d="M5 17a2 2 0 01-2-2V7a2 2 0 012-2 1 1 0 010 2v8a1 1 0 001 1h8a1 1 0 001-1V7a1 1 0 112 0v8a2 2 0 01-2 2H5z" /></svg>
+                    SIMPAN KE DATABASE
+                </button>
+                <p id="status" class="text-center text-[10px] font-bold uppercase tracking-widest text-slate-400 italic"></p>
+            </div>
         </div>
 
         <!-- Preview Invoice -->
         <div class="lg:w-2/3">
-            <div id="print-area" class="print-container bg-white p-10 shadow-2xl rounded-xl border border-slate-200 min-h-[1100px] flex flex-col">
+            <div id="print-area" class="print-container bg-white p-10 shadow-2xl rounded-xl border border-slate-200 min-h-[1100px] flex flex-col relative overflow-hidden">
                 
-                <div class="flex justify-between items-start border-b-4 border-green-700 pb-6 mb-8">
+                <!-- Watermark Background -->
+                <div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none rotate-[-30deg]">
+                    <h1 class="text-[120px] font-black">JAUHARI</h1>
+                </div>
+
+                <div class="flex justify-between items-start border-b-4 border-green-700 pb-6 mb-8 relative z-10">
                     <div class="flex gap-4 items-center">
-                        <div class="bg-green-700 text-white p-3 rounded-2xl">
+                        <div class="bg-green-700 text-white p-3 rounded-2xl shadow-lg shadow-green-100">
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L3 7V17L12 22L21 17V7L12 2Z"/></svg>
                         </div>
                         <div>
                             <h2 class="text-2xl font-black text-green-800 tracking-tight uppercase">Jauhari Mitra Pangan</h2>
                             <p class="text-sm font-bold text-slate-600 italic">“Asli Parakansalak, Segarnya Gak Pake Jarak.”</p>
-                            <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold">NIB: 1104260035234 | Reg: 69D9F7DD2D314</p>
+                            <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold tracking-wider">NIB: 1104260035234 | Reg: 69D9F7DD2D314</p>
                         </div>
                     </div>
                     <div class="text-right">
-                        <h1 class="text-3xl font-black text-slate-800">INVOICE</h1>
-                        <p class="font-mono text-slate-500" id="v-no">#JMP/---</p>
+                        <h1 class="text-4xl font-black text-slate-800 tracking-tighter">INVOICE</h1>
+                        <p class="font-mono text-slate-500 font-bold" id="v-no">#JMP/---</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-10 mb-10">
+                <div class="grid grid-cols-2 gap-10 mb-10 relative z-10">
                     <div>
-                        <h4 class="text-[10px] font-black text-green-700 uppercase tracking-widest mb-2">Tagihan Untuk:</h4>
-                        <p class="font-bold text-slate-800 text-lg" id="v-name">Nama Pelanggan</p>
-                        <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-line" id="v-addr">Alamat Lengkap</p>
-                        <p class="text-sm font-bold text-green-700 mt-2" id="v-hp">-</p>
+                        <h4 class="text-[10px] font-black text-green-700 uppercase tracking-widest mb-2 flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                            Tagihan Untuk:
+                        </h4>
+                        <p class="font-black text-slate-800 text-xl" id="v-name">Nama Pelanggan</p>
+                        <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-line mt-1" id="v-addr">Alamat Lengkap Tujuan Pengiriman</p>
+                        <p class="text-sm font-black text-green-700 mt-2 bg-green-50 px-2 py-1 rounded-md inline-block border border-green-100" id="v-hp">-</p>
                     </div>
-                    <div class="text-right">
-                        <p class="text-sm text-slate-500 uppercase font-bold text-[10px]">Tanggal:</p>
-                        <p class="font-bold text-slate-800 text-lg" id="v-date">-</p>
-                        <div class="mt-4 bg-slate-50 p-2 rounded text-[10px] text-slate-500 border border-slate-100 inline-block">
-                            Pertigaan Pabrik Teh Parakansalak,<br>Sukabumi.
+                    <div class="text-right flex flex-col items-end">
+                        <p class="text-sm text-slate-500 uppercase font-bold text-[10px] tracking-widest">Tanggal:</p>
+                        <p class="font-black text-slate-800 text-xl" id="v-date">-</p>
+                        <div class="mt-4 bg-slate-50 p-3 rounded-xl text-[10px] text-slate-500 border border-slate-100 leading-relaxed">
+                            <strong class="text-slate-700">Pusat Distribusi:</strong><br>
+                            Pertigaan Pabrik Teh Parakansalak,<br>
+                            Jl. Raya Parakansalak, Sukabumi.
                         </div>
                     </div>
                 </div>
 
-                <div class="flex-grow">
+                <div class="flex-grow relative z-10">
                     <table class="w-full text-left">
                         <thead class="bg-green-700 text-white">
                             <tr>
-                                <th class="p-3 text-xs uppercase rounded-tl-lg">Deskripsi Barang</th>
-                                <th class="p-3 text-xs uppercase text-center w-32">Jumlah (Qty)</th>
-                                <th class="p-3 text-xs uppercase text-right w-40">Harga Satuan</th>
-                                <th class="p-3 text-xs uppercase text-right w-40 rounded-tr-lg">Total</th>
+                                <th class="p-4 text-xs font-black uppercase rounded-tl-xl tracking-wider">Deskripsi Barang</th>
+                                <th class="p-4 text-xs font-black uppercase text-center w-32 tracking-wider">Jumlah (Qty)</th>
+                                <th class="p-4 text-xs font-black uppercase text-right w-40 tracking-wider">Harga Satuan</th>
+                                <th class="p-4 text-xs font-black uppercase text-right w-40 rounded-tr-xl tracking-wider">Total</th>
                             </tr>
                         </thead>
                         <tbody id="v-table-body"></tbody>
-                        <tfoot class="border-t-2 border-green-700">
-                            <tr>
-                                <td colspan="3" class="p-4 text-right font-bold text-slate-500 uppercase text-xs">Total Pembayaran</td>
-                                <td class="p-4 text-right font-black text-2xl text-green-800" id="v-grandtotal">Rp 0</td>
+                        <tfoot class="border-t-4 border-green-700">
+                            <tr class="bg-green-50/50">
+                                <td colspan="3" class="p-5 text-right font-black text-slate-500 uppercase text-xs tracking-widest">Grand Total Pembayaran</td>
+                                <td class="p-5 text-right font-black text-3xl text-green-800" id="v-grandtotal">Rp 0</td>
                             </tr>
                         </tfoot>
                     </table>
 
-                    <div class="mt-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
-                        <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Terbilang:</p>
-                        <p class="font-bold text-slate-700 italic" id="v-terbilang">Nol Rupiah</p>
+                    <div class="mt-6 bg-slate-50 p-5 rounded-2xl border-2 border-slate-100 relative">
+                        <div class="absolute -top-3 left-6 bg-white px-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">Terbilang</div>
+                        <p class="font-bold text-slate-700 italic text-lg" id="v-terbilang">Nol Rupiah</p>
                     </div>
 
-                    <div class="mt-10 flex gap-10">
-                        <div class="flex-grow border-2 border-slate-100 rounded-lg p-4">
-                            <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Keterangan:</p>
-                            <ul class="text-[10px] text-slate-500 list-disc pl-4 space-y-1">
-                                <li>Pembayaran sah bila telah diuangkan (Cek/Giro).</li>
-                                <li>Barang yang sudah dibeli tidak dapat ditukar.</li>
-                                <li>Transfer BCA: <strong>8375xxxxxx</strong> a/n Johan Jauharudin.</li>
+                    <div class="mt-12 flex gap-10">
+                        <div class="flex-grow border-2 border-slate-100 rounded-2xl p-6 bg-white">
+                            <p class="text-[10px] font-black text-slate-400 uppercase mb-3 tracking-widest">Ketentuan & Info Pembayaran:</p>
+                            <ul class="text-[11px] text-slate-600 list-disc pl-5 space-y-2">
+                                <li>Pembayaran sah hanya melalui rekening terdaftar.</li>
+                                <li>Barang yang sudah dibeli tidak dapat ditukar kecuali ada perjanjian.</li>
+                                <li>Transfer Bank <strong>BCA: 8375-XXX-XXX</strong> a/n Johan Jauharudin.</li>
+                                <li>Bukti transfer harap dikirim ke WA: <strong>0857-5977-9773</strong>.</li>
                             </ul>
                         </div>
-                        <div class="w-64 text-center">
-                            <p class="text-xs font-bold text-slate-800 mb-20">Hormat Kami,</p>
-                            <p class="font-black text-sm text-green-800 border-b-2 border-slate-800 inline-block px-4">JOHAN JAUHARUDIN</p>
+                        <div class="w-72 text-center flex flex-col items-center justify-between py-2">
+                            <div>
+                                <p class="text-xs font-black text-slate-800 uppercase tracking-tighter mb-1">Parakansalak, <span class="v-date-footer">...</span></p>
+                                <p class="text-[10px] font-bold text-slate-400 uppercase">Hormat Kami,</p>
+                            </div>
+                            <div class="mt-16">
+                                <p class="font-black text-lg text-green-800 border-b-2 border-slate-800 inline-block px-6 pb-1">JOHAN JAUHARUDIN</p>
+                                <p class="text-[9px] font-bold text-slate-400 uppercase mt-2 tracking-widest">Owner Jauhari Mitra Pangan</p>
+                            </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="mt-auto pt-8 border-t border-slate-100 flex justify-between items-end opacity-40 text-[9px] font-bold uppercase tracking-widest relative z-10">
+                    <div>
+                        <p>Jauhari Mitra Pangan - Official Invoice Document</p>
+                        <p>Jl. Raya Parakansalak, Pertigaan Pabrik Teh</p>
+                    </div>
+                    <p>Halaman 1 / 1</p>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Settings Modal -->
-    <div id="settings-modal" class="fixed inset-0 bg-slate-900/80 flex items-center justify-center p-4 z-[100] hidden no-print">
-        <div class="bg-white rounded-2xl p-8 w-full max-w-md">
-            <h2 class="text-xl font-bold mb-4">Hubungkan Database</h2>
-            <input type="text" id="script-url" class="w-full border-2 border-slate-200 p-3 rounded-xl mb-4 text-sm" placeholder="Paste Apps Script URL here">
-            <button onclick="saveSettings()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold">Simpan</button>
+    <div id="settings-modal" class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-4 z-[100] hidden no-print transition-all">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-lg shadow-2xl border border-slate-200">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="bg-green-100 p-3 rounded-2xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                </div>
+                <div>
+                    <h2 class="text-2xl font-black text-slate-800 tracking-tight leading-none">Hubungkan Database</h2>
+                    <p class="text-xs text-slate-400 mt-1 font-bold">Pastikan Anda telah melakukan 'Deploy as Web App'</p>
+                </div>
+            </div>
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Apps Script Web App URL</label>
+            <input type="text" id="script-url" class="w-full border-2 border-slate-100 p-4 rounded-2xl mb-6 outline-none focus:border-green-500 transition-all text-sm font-mono" placeholder="https://script.google.com/macros/s/...">
+            <div class="flex gap-4">
+                <button onclick="saveSettings()" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-4 rounded-2xl font-black text-sm tracking-widest shadow-lg shadow-green-100">SIMPAN & HUBUNGKAN</button>
+                <button onclick="document.getElementById('settings-modal').classList.add('hidden')" class="px-8 py-4 text-slate-400 font-bold hover:text-slate-600 transition-all text-sm uppercase">Batal</button>
+            </div>
         </div>
     </div>
 
     <script>
-        let scriptUrl = localStorage.getItem('jmp_script_url_v2') || "";
+        let scriptUrl = localStorage.getItem('jmp_script_url_v3') || "";
+        let customersDB = [];
 
         window.onload = () => {
             document.getElementById('inv-date').valueAsDate = new Date();
-            if(!scriptUrl) document.getElementById('settings-modal').classList.remove('hidden');
+            if(!scriptUrl) {
+                document.getElementById('settings-modal').classList.remove('hidden');
+            } else {
+                fetchCustomers();
+            }
             updatePreview();
         };
 
         function saveSettings() {
             const url = document.getElementById('script-url').value;
             if(url) {
-                localStorage.setItem('jmp_script_url_v2', url);
+                localStorage.setItem('jmp_script_url_v3', url);
                 scriptUrl = url;
                 location.reload();
             }
         }
 
+        // AMBIL DATA PELANGGAN DARI GOOGLE SHEETS
+        async function fetchCustomers() {
+            const status = document.getElementById('status');
+            status.innerText = "SINKRONISASI PELANGGAN...";
+            try {
+                // Gunakan mode JSONP atau standar fetch dengan callback di GAS
+                const response = await fetch(`${scriptUrl}?action=getPelanggan`);
+                const data = await response.json();
+                customersDB = data;
+                populateSelect();
+                status.innerText = "DATABASE TERHUBUNG";
+            } catch (e) {
+                status.innerText = "MODE MANUAL (OFFLINE)";
+            }
+        }
+
+        function populateSelect() {
+            const select = document.getElementById('cust-db');
+            select.innerHTML = '<option value="">-- Pelanggan Baru --</option>';
+            customersDB.forEach((c, index) => {
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.text = c[0]; // Nama
+                select.appendChild(opt);
+            });
+        }
+
+        function pickCustomer() {
+            const select = document.getElementById('cust-db');
+            const index = select.value;
+            if(index !== "") {
+                const data = customersDB[index];
+                document.getElementById('m-nama').value = data[0] || "";
+                document.getElementById('m-alamat').value = data[1] || "";
+                document.getElementById('m-hp').value = data[3] || ""; // Kolom D adalah HP
+            } else {
+                document.getElementById('m-nama').value = "";
+                document.getElementById('m-alamat').value = "";
+                document.getElementById('m-hp').value = "";
+            }
+            updatePreview();
+        }
+
         function addItem() {
             const list = document.getElementById('items-list');
             const div = document.createElement('div');
-            div.className = 'item-row p-3 bg-slate-50 rounded-lg border border-slate-100';
+            div.className = 'item-row p-3 bg-slate-50 rounded-lg border border-slate-100 relative group';
             div.innerHTML = `
-                <input type="text" placeholder="Nama Barang" class="i-name w-full mb-2 p-1 border-b bg-transparent text-sm font-medium outline-none" oninput="updatePreview()">
+                <input type="text" placeholder="Nama Produk" class="i-name w-full mb-2 p-1 border-b bg-transparent text-sm font-medium outline-none focus:border-green-500" oninput="updatePreview()">
                 <div class="flex gap-2">
-                    <input type="number" placeholder="Qty" class="i-qty w-1/4 p-1 border-b bg-transparent text-sm outline-none" oninput="calculate()">
-                    <select class="i-satuan w-1/4 p-1 border-b bg-transparent text-[10px] outline-none" onchange="updatePreview()">
+                    <input type="number" placeholder="Qty" class="i-qty w-1/4 p-1 border-b bg-transparent text-sm outline-none focus:border-green-500" oninput="calculate()">
+                    <select class="i-satuan w-1/4 p-1 border-b bg-transparent text-[10px] outline-none focus:border-green-500" onchange="updatePreview()">
                         <option value="Kg">Kg</option>
                         <option value="Pcs">Pcs</option>
                         <option value="Iket">Iket</option>
                         <option value="Liter">Liter</option>
+                        <option value="Box">Box</option>
                     </select>
-                    <input type="number" placeholder="Harga" class="i-price w-2/4 p-1 border-b bg-transparent text-sm outline-none text-right" oninput="calculate()">
+                    <input type="number" placeholder="Harga" class="i-price w-2/4 p-1 border-b bg-transparent text-sm outline-none text-right focus:border-green-500" oninput="calculate()">
                 </div>
+                <button onclick="this.parentElement.remove(); updatePreview();" class="absolute -right-2 -top-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                </button>
             `;
             list.appendChild(div);
         }
@@ -214,10 +321,17 @@
 
         function updatePreview() {
             document.getElementById('v-no').innerText = "#" + (document.getElementById('inv-no').value || "JMP/---");
-            document.getElementById('v-date').innerText = document.getElementById('inv-date').value || "-";
-            document.getElementById('v-name').innerText = document.getElementById('m-nama').value || "Nama Pelanggan";
-            document.getElementById('v-addr').innerText = document.getElementById('m-alamat').value || "Alamat";
-            document.getElementById('v-hp').innerText = document.getElementById('m-hp').value || "-";
+            const dateVal = document.getElementById('inv-date').value || "-";
+            document.getElementById('v-date').innerText = dateVal;
+            document.querySelectorAll('.v-date-footer').forEach(el => el.innerText = dateVal);
+
+            const name = document.getElementById('m-nama').value || "Nama Pelanggan";
+            const addr = document.getElementById('m-alamat').value || "Alamat Lengkap";
+            const hp = document.getElementById('m-hp').value || "-";
+
+            document.getElementById('v-name').innerText = name;
+            document.getElementById('v-addr').innerText = addr;
+            document.getElementById('v-hp').innerText = hp;
 
             const rows = document.querySelectorAll('.item-row');
             const tbody = document.getElementById('v-table-body');
@@ -233,12 +347,12 @@
                 grandTotal += total;
 
                 const tr = document.createElement('tr');
-                tr.className = "border-b border-slate-100";
+                tr.className = "border-b border-slate-50 hover:bg-slate-50 transition-colors";
                 tr.innerHTML = `
-                    <td class="p-3 text-sm font-medium">${n}</td>
-                    <td class="p-3 text-sm text-center">${q} ${s}</td>
-                    <td class="p-3 text-sm text-right">Rp ${p.toLocaleString('id-ID')}</td>
-                    <td class="p-3 text-sm font-bold text-right">Rp ${total.toLocaleString('id-ID')}</td>
+                    <td class="p-4 text-sm font-bold text-slate-800">${n}</td>
+                    <td class="p-4 text-sm text-center font-bold text-slate-600">${q} ${s}</td>
+                    <td class="p-4 text-sm text-right text-slate-600 font-bold">Rp ${p.toLocaleString('id-ID')}</td>
+                    <td class="p-4 text-sm font-black text-right text-green-800">Rp ${total.toLocaleString('id-ID')}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -261,7 +375,7 @@
         }
 
         async function saveToSheet() {
-            if(!scriptUrl) return alert("Connect database first!");
+            if(!scriptUrl) return alert("Hubungkan Database Terlebih Dahulu!");
             const btn = document.getElementById('btn-save');
             const status = document.getElementById('status');
             
@@ -278,19 +392,39 @@
             const payload = {
                 noInvoice: document.getElementById('inv-no').value,
                 tanggal: document.getElementById('inv-date').value,
-                namaPelanggan: document.getElementById('v-name').innerText,
+                namaPelanggan: document.getElementById('m-nama').value,
+                alamat: document.getElementById('m-alamat').value,
+                hp: document.getElementById('m-hp').value,
                 items: items
             };
 
             btn.disabled = true;
-            status.innerText = "Menyimpan...";
+            btn.innerHTML = "PROSES PENYIMPANAN...";
+            status.innerText = "SEDANG MENCATAT INVOICE & PELANGGAN...";
 
             try {
-                await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                status.innerText = "✅ Tersimpan ke Google Sheets!";
+                // Gunakan mode no-cors untuk bypass keterbatasan iFrame
+                await fetch(scriptUrl, { 
+                    method: 'POST', 
+                    mode: 'no-cors', 
+                    body: JSON.stringify(payload) 
+                });
+                
+                status.innerText = "BERHASIL DISIMPAN & REKAPAN TERUPDATE!";
+                status.classList.remove('text-slate-400');
+                status.classList.add('text-green-600');
+                
+                // Refresh list pelanggan
+                fetchCustomers();
+
+                setTimeout(() => {
+                    status.innerText = "READY";
+                    status.classList.add('text-slate-400');
+                    btn.disabled = false;
+                    btn.innerHTML = "SIMPAN KE DATABASE";
+                }, 3000);
             } catch (e) {
-                status.innerText = "❌ Gagal!";
-            } finally {
+                status.innerText = "ERROR HUBUNGI ADMIN";
                 btn.disabled = false;
             }
         }
