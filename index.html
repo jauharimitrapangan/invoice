@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - Jauhari Mitra Pangan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+            .print-container { box-shadow: none !important; border: none !important; margin: 0 !important; width: 100% !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen pb-20">
+
+    <header class="bg-green-700 text-white p-4 shadow-md no-print sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-white p-1 rounded-full">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L3 7V17L12 22L21 17V7L12 2Z" stroke="#15803d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Jauhari Mitra Pangan</h1>
+                    <p class="text-[10px] opacity-80 uppercase tracking-widest">Internal Invoice System</p>
+                </div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="window.print()" class="bg-white text-green-700 px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-green-50">Cetak PDF</button>
+                <button onclick="document.getElementById('settings-modal').classList.remove('hidden')" class="bg-green-800 p-2 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container mx-auto mt-6 px-4 flex flex-col lg:flex-row gap-6">
+        
+        <!-- Input Form -->
+        <div class="lg:w-1/3 space-y-4 no-print">
+            <div class="bg-white rounded-xl shadow-sm p-5 border border-slate-200">
+                <h3 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
+                    <span class="bg-green-100 text-green-700 p-1 rounded text-xs">1</span> Informasi Dasar
+                </h3>
+                <div class="grid gap-3">
+                    <input type="text" id="inv-no" class="w-full bg-slate-50 border p-2 rounded-lg text-sm" placeholder="No Invoice">
+                    <input type="date" id="inv-date" class="w-full bg-slate-50 border p-2 rounded-lg text-sm">
+                    <div id="manual-inputs" class="space-y-2 border-t pt-2">
+                        <input type="text" id="m-nama" placeholder="Nama Pelanggan" class="w-full border p-2 rounded text-sm" oninput="updatePreview()">
+                        <textarea id="m-alamat" placeholder="Alamat" class="w-full border p-2 rounded text-sm" oninput="updatePreview()"></textarea>
+                        <input type="text" id="m-hp" placeholder="No HP/WA" class="w-full border p-2 rounded text-sm" oninput="updatePreview()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-5 border border-slate-200">
+                <h3 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
+                    <span class="bg-green-100 text-green-700 p-1 rounded text-xs">2</span> Item Produk
+                </h3>
+                <div id="items-list" class="space-y-3">
+                    <div class="item-row p-3 bg-slate-50 rounded-lg border border-slate-100">
+                        <input type="text" placeholder="Nama Barang" class="i-name w-full mb-2 p-1 border-b bg-transparent text-sm font-medium outline-none" oninput="updatePreview()">
+                        <div class="flex gap-2">
+                            <input type="number" placeholder="Qty" class="i-qty w-1/4 p-1 border-b bg-transparent text-sm outline-none" oninput="calculate()">
+                            <select class="i-satuan w-1/4 p-1 border-b bg-transparent text-[10px] outline-none" onchange="updatePreview()">
+                                <option value="Kg">Kg</option>
+                                <option value="Pcs">Pcs</option>
+                                <option value="Iket">Iket</option>
+                                <option value="Liter">Liter</option>
+                                <option value="Box">Box</option>
+                            </select>
+                            <input type="number" placeholder="Harga" class="i-price w-2/4 p-1 border-b bg-transparent text-sm outline-none text-right" oninput="calculate()">
+                        </div>
+                    </div>
+                </div>
+                <button onclick="addItem()" class="w-full mt-3 py-2 border-2 border-dashed border-slate-200 rounded-lg text-xs text-slate-400 font-bold hover:border-green-300 hover:text-green-600 transition-all">+ TAMBAH BARANG</button>
+            </div>
+
+            <button onclick="saveToSheet()" id="btn-save" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg transition-all">SIMPAN REKAPAN</button>
+            <p id="status" class="text-center text-xs font-medium"></p>
+        </div>
+
+        <!-- Preview Invoice -->
+        <div class="lg:w-2/3">
+            <div id="print-area" class="print-container bg-white p-10 shadow-2xl rounded-xl border border-slate-200 min-h-[1100px] flex flex-col">
+                
+                <div class="flex justify-between items-start border-b-4 border-green-700 pb-6 mb-8">
+                    <div class="flex gap-4 items-center">
+                        <div class="bg-green-700 text-white p-3 rounded-2xl">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L3 7V17L12 22L21 17V7L12 2Z"/></svg>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-black text-green-800 tracking-tight uppercase">Jauhari Mitra Pangan</h2>
+                            <p class="text-sm font-bold text-slate-600 italic">“Asli Parakansalak, Segarnya Gak Pake Jarak.”</p>
+                            <p class="text-[10px] text-slate-400 mt-1 uppercase font-bold">NIB: 1104260035234 | Reg: 69D9F7DD2D314</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <h1 class="text-3xl font-black text-slate-800">INVOICE</h1>
+                        <p class="font-mono text-slate-500" id="v-no">#JMP/---</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-10 mb-10">
+                    <div>
+                        <h4 class="text-[10px] font-black text-green-700 uppercase tracking-widest mb-2">Tagihan Untuk:</h4>
+                        <p class="font-bold text-slate-800 text-lg" id="v-name">Nama Pelanggan</p>
+                        <p class="text-sm text-slate-600 leading-relaxed whitespace-pre-line" id="v-addr">Alamat Lengkap</p>
+                        <p class="text-sm font-bold text-green-700 mt-2" id="v-hp">-</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-slate-500 uppercase font-bold text-[10px]">Tanggal:</p>
+                        <p class="font-bold text-slate-800 text-lg" id="v-date">-</p>
+                        <div class="mt-4 bg-slate-50 p-2 rounded text-[10px] text-slate-500 border border-slate-100 inline-block">
+                            Pertigaan Pabrik Teh Parakansalak,<br>Sukabumi.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-grow">
+                    <table class="w-full text-left">
+                        <thead class="bg-green-700 text-white">
+                            <tr>
+                                <th class="p-3 text-xs uppercase rounded-tl-lg">Deskripsi Barang</th>
+                                <th class="p-3 text-xs uppercase text-center w-32">Jumlah (Qty)</th>
+                                <th class="p-3 text-xs uppercase text-right w-40">Harga Satuan</th>
+                                <th class="p-3 text-xs uppercase text-right w-40 rounded-tr-lg">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="v-table-body"></tbody>
+                        <tfoot class="border-t-2 border-green-700">
+                            <tr>
+                                <td colspan="3" class="p-4 text-right font-bold text-slate-500 uppercase text-xs">Total Pembayaran</td>
+                                <td class="p-4 text-right font-black text-2xl text-green-800" id="v-grandtotal">Rp 0</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="mt-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Terbilang:</p>
+                        <p class="font-bold text-slate-700 italic" id="v-terbilang">Nol Rupiah</p>
+                    </div>
+
+                    <div class="mt-10 flex gap-10">
+                        <div class="flex-grow border-2 border-slate-100 rounded-lg p-4">
+                            <p class="text-[10px] font-black text-slate-400 uppercase mb-2">Keterangan:</p>
+                            <ul class="text-[10px] text-slate-500 list-disc pl-4 space-y-1">
+                                <li>Pembayaran sah bila telah diuangkan (Cek/Giro).</li>
+                                <li>Barang yang sudah dibeli tidak dapat ditukar.</li>
+                                <li>Transfer BCA: <strong>8375xxxxxx</strong> a/n Johan Jauharudin.</li>
+                            </ul>
+                        </div>
+                        <div class="w-64 text-center">
+                            <p class="text-xs font-bold text-slate-800 mb-20">Hormat Kami,</p>
+                            <p class="font-black text-sm text-green-800 border-b-2 border-slate-800 inline-block px-4">JOHAN JAUHARUDIN</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-slate-900/80 flex items-center justify-center p-4 z-[100] hidden no-print">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-md">
+            <h2 class="text-xl font-bold mb-4">Hubungkan Database</h2>
+            <input type="text" id="script-url" class="w-full border-2 border-slate-200 p-3 rounded-xl mb-4 text-sm" placeholder="Paste Apps Script URL here">
+            <button onclick="saveSettings()" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold">Simpan</button>
+        </div>
+    </div>
+
+    <script>
+        let scriptUrl = localStorage.getItem('jmp_script_url_v2') || "";
+
+        window.onload = () => {
+            document.getElementById('inv-date').valueAsDate = new Date();
+            if(!scriptUrl) document.getElementById('settings-modal').classList.remove('hidden');
+            updatePreview();
+        };
+
+        function saveSettings() {
+            const url = document.getElementById('script-url').value;
+            if(url) {
+                localStorage.setItem('jmp_script_url_v2', url);
+                scriptUrl = url;
+                location.reload();
+            }
+        }
+
+        function addItem() {
+            const list = document.getElementById('items-list');
+            const div = document.createElement('div');
+            div.className = 'item-row p-3 bg-slate-50 rounded-lg border border-slate-100';
+            div.innerHTML = `
+                <input type="text" placeholder="Nama Barang" class="i-name w-full mb-2 p-1 border-b bg-transparent text-sm font-medium outline-none" oninput="updatePreview()">
+                <div class="flex gap-2">
+                    <input type="number" placeholder="Qty" class="i-qty w-1/4 p-1 border-b bg-transparent text-sm outline-none" oninput="calculate()">
+                    <select class="i-satuan w-1/4 p-1 border-b bg-transparent text-[10px] outline-none" onchange="updatePreview()">
+                        <option value="Kg">Kg</option>
+                        <option value="Pcs">Pcs</option>
+                        <option value="Iket">Iket</option>
+                        <option value="Liter">Liter</option>
+                    </select>
+                    <input type="number" placeholder="Harga" class="i-price w-2/4 p-1 border-b bg-transparent text-sm outline-none text-right" oninput="calculate()">
+                </div>
+            `;
+            list.appendChild(div);
+        }
+
+        function calculate() { updatePreview(); }
+
+        function updatePreview() {
+            document.getElementById('v-no').innerText = "#" + (document.getElementById('inv-no').value || "JMP/---");
+            document.getElementById('v-date').innerText = document.getElementById('inv-date').value || "-";
+            document.getElementById('v-name').innerText = document.getElementById('m-nama').value || "Nama Pelanggan";
+            document.getElementById('v-addr').innerText = document.getElementById('m-alamat').value || "Alamat";
+            document.getElementById('v-hp').innerText = document.getElementById('m-hp').value || "-";
+
+            const rows = document.querySelectorAll('.item-row');
+            const tbody = document.getElementById('v-table-body');
+            tbody.innerHTML = "";
+            let grandTotal = 0;
+
+            rows.forEach(row => {
+                const n = row.querySelector('.i-name').value || "-";
+                const q = parseFloat(row.querySelector('.i-qty').value) || 0;
+                const s = row.querySelector('.i-satuan').value;
+                const p = parseFloat(row.querySelector('.i-price').value) || 0;
+                const total = q * p;
+                grandTotal += total;
+
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="p-3 text-sm font-medium">${n}</td>
+                    <td class="p-3 text-sm text-center">${q} ${s}</td>
+                    <td class="p-3 text-sm text-right">Rp ${p.toLocaleString('id-ID')}</td>
+                    <td class="p-3 text-sm font-bold text-right">Rp ${total.toLocaleString('id-ID')}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('v-grandtotal').innerText = "Rp " + grandTotal.toLocaleString('id-ID');
+            document.getElementById('v-terbilang').innerText = numberToWords(grandTotal) + " Rupiah";
+        }
+
+        function numberToWords(num) {
+            const unit = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
+            if (num < 12) return unit[num];
+            if (num < 20) return numberToWords(num - 10) + " Belas";
+            if (num < 100) return numberToWords(Math.floor(num / 10)) + " Puluh " + numberToWords(num % 10);
+            if (num < 200) return "Seratus " + numberToWords(num - 100);
+            if (num < 1000) return numberToWords(Math.floor(num / 100)) + " Ratus " + numberToWords(num % 100);
+            if (num < 2000) return "Seribu " + numberToWords(num - 1000);
+            if (num < 1000000) return numberToWords(Math.floor(num / 1000)) + " Ribu " + numberToWords(num % 1000);
+            if (num < 1000000000) return numberToWords(Math.floor(num / 1000000)) + " Juta " + numberToWords(num % 1000000);
+            return num.toString();
+        }
+
+        async function saveToSheet() {
+            if(!scriptUrl) return alert("Connect database first!");
+            const btn = document.getElementById('btn-save');
+            const status = document.getElementById('status');
+            
+            let items = [];
+            document.querySelectorAll('.item-row').forEach(row => {
+                items.push({
+                    nama: row.querySelector('.i-name').value,
+                    qty: row.querySelector('.i-qty').value,
+                    satuan: row.querySelector('.i-satuan').value,
+                    harga: row.querySelector('.i-price').value
+                });
+            });
+
+            const payload = {
+                noInvoice: document.getElementById('inv-no').value,
+                tanggal: document.getElementById('inv-date').value,
+                namaPelanggan: document.getElementById('v-name').innerText,
+                items: items
+            };
+
+            btn.disabled = true;
+            status.innerText = "Menyimpan...";
+
+            try {
+                await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+                status.innerText = "✅ Tersimpan ke Google Sheets!";
+            } catch (e) {
+                status.innerText = "❌ Gagal!";
+            } finally {
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
