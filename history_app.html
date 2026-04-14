@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History Invoice - Jauhari Mitra Pangan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .status-pill { padding: 2px 10px; border-radius: 99px; font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid transparent; }
+        .lunas { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+        .belum-lunas { background: #fee2e2; color: #991b1b; border-color: #fecaca; }
+        @media print { .no-print { display: none !important; } .print-area { display: block !important; padding: 0 !important; } body { background: white; } }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <header class="bg-green-800 text-white p-4 shadow-lg no-print sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-white p-1 rounded-lg">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2.5"><path d="M12 2L3 7V17L12 22L21 17V7L12 2Z"/></svg>
+                </div>
+                <h1 class="font-black text-lg uppercase tracking-tighter">History Dashboard</h1>
+            </div>
+            <div class="flex gap-2">
+                <input type="text" id="search" oninput="filterHistory()" placeholder="Cari No Inv / Nama..." class="text-xs p-2 rounded-xl bg-green-900 border-none text-white outline-none w-48 md:w-64 focus:ring-2 focus:ring-green-400">
+                <button onclick="fetchHistory()" class="bg-white text-green-800 p-2 rounded-xl font-bold shadow-md hover:bg-green-50 transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </button>
+                <button onclick="openSettings()" class="bg-green-700 text-white p-2 rounded-xl hover:bg-green-600 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-6 no-print">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-slate-50 text-slate-400 uppercase font-black text-[10px] tracking-widest border-b">
+                        <tr>
+                            <th class="p-4">Tanggal</th>
+                            <th class="p-4">No. Invoice</th>
+                            <th class="p-4">Pelanggan</th>
+                            <th class="p-4 text-right">Total Tagihan</th>
+                            <th class="p-4 text-center">Status</th>
+                            <th class="p-4 text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body" class="divide-y divide-slate-100">
+                        <!-- Data akan diisi lewat Javascript -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="loading-state" class="p-20 text-center flex flex-col items-center gap-3">
+                <div class="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin"></div>
+                <p class="text-slate-400 font-bold uppercase text-xs tracking-widest">Menghubungkan ke Database...</p>
+            </div>
+            <div id="error-state" class="p-20 text-center hidden flex flex-col items-center gap-3">
+                <p class="text-red-500 font-bold uppercase text-xs">Gagal Mengambil Data</p>
+                <button onclick="openSettings()" class="text-blue-600 underline text-[10px] font-bold uppercase">Cek Pengaturan URL</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Settings Modal (Sama seperti Index agar familiar) -->
+    <div id="settings-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden no-print flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl">
+            <h2 class="text-xl font-black mb-2 uppercase tracking-tighter">Sinkronisasi Database</h2>
+            <p class="text-xs text-slate-400 mb-6 font-medium">Tempel URL Web App (/exec) dari Google Apps Script Akang.</p>
+            <input type="text" id="script-url-input" class="w-full border-2 border-slate-100 p-3 rounded-xl mb-6 outline-none focus:border-green-500 text-sm font-mono" placeholder="https://script.google.com/macros/s/...">
+            <div class="flex gap-3">
+                <button onclick="saveSettings()" class="flex-1 bg-green-600 text-white py-3 rounded-xl font-bold uppercase tracking-widest text-xs">Simpan & Hubungkan</button>
+                <button onclick="closeSettings()" class="px-6 py-3 text-slate-400 font-bold text-xs uppercase">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Preview -->
+    <div id="print-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden no-print p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-2xl mx-auto rounded-3xl shadow-2xl relative">
+            <div class="sticky top-0 bg-white p-5 border-b flex justify-between items-center rounded-t-3xl z-10">
+                <h3 class="font-black text-xs uppercase text-slate-400">Invoice Preview</h3>
+                <div class="flex gap-2">
+                    <button onclick="window.print()" class="bg-green-700 text-white px-4 py-2 rounded-xl text-xs font-black uppercase shadow-lg shadow-green-100">Cetak Sekarang</button>
+                    <button onclick="closePreview()" class="bg-slate-100 p-2 rounded-xl text-slate-500 hover:bg-slate-200">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div id="invoice-view" class="p-10 bg-white">
+                <!-- Konten Invoice Muncul Di Sini -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allInvoices = [];
+        let groupedInvoices = {};
+        let customersDB = [];
+        let scriptUrl = localStorage.getItem('jmp_url_v4') || "";
+
+        window.onload = () => {
+            fetchHistory();
+        };
+
+        function openSettings() { document.getElementById('settings-modal').classList.remove('hidden'); }
+        function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
+        function closePreview() { document.getElementById('print-modal').classList.add('hidden'); }
+
+        function saveSettings() {
+            const url = document.getElementById('script-url-input').value;
+            if(url) {
+                localStorage.setItem('jmp_url_v4', url);
+                scriptUrl = url;
+                location.reload();
+            }
+        }
+
+        async function fetchHistory() {
+            const loading = document.getElementById('loading-state');
+            const error = document.getElementById('error-state');
+            const body = document.getElementById('history-body');
+
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
+            body.innerHTML = "";
+
+            // PRIORITAS 1: Jika dijalankan langsung dari Google Script
+            if (typeof google !== 'undefined' && google.script && google.script.run) {
+                google.script.run.withSuccessHandler(data => {
+                    processData(data.invoices, data.customers);
+                }).getHistoryData();
+                return;
+            }
+
+            // PRIORITAS 2: Jika dijalankan dari Netlify/Lokal (pake URL)
+            if (!scriptUrl) {
+                loading.classList.add('hidden');
+                openSettings();
+                return;
+            }
+
+            try {
+                const response = await fetch(`${scriptUrl}?action=getHistory`);
+                const data = await response.json();
+                processData(data.invoices, data.customers);
+            } catch (e) {
+                loading.classList.add('hidden');
+                error.classList.remove('hidden');
+            }
+        }
+
+        function processData(invoices, customers) {
+            allInvoices = invoices || [];
+            customersDB = customers || [];
+            groupData();
+            renderTable();
+            document.getElementById('loading-state').classList.add('hidden');
+        }
+
+        function groupData() {
+            groupedInvoices = {};
+            allInvoices.forEach(row => {
+                const noInv = row[0];
+                if (!noInv) return;
+                
+                if (!groupedInvoices[noInv]) {
+                    groupedInvoices[noInv] = {
+                        noInv: noInv,
+                        tanggal: row[1],
+                        nama: row[2],
+                        total: 0,
+                        status: row[8] || "Belum Lunas",
+                        items: []
+                    };
+                }
+                groupedInvoices[noInv].total += parseFloat(row[7]) || 0;
+                groupedInvoices[noInv].items.push({
+                    nama: row[3],
+                    qty: row[4],
+                    satuan: row[5],
+                    harga: row[6],
+                    subtotal: row[7]
+                });
+            });
+        }
+
+        function renderTable(filterData = null) {
+            const body = document.getElementById('history-body');
+            body.innerHTML = "";
+            const dataToRender = filterData || Object.values(groupedInvoices).reverse();
+
+            if (dataToRender.length === 0) {
+                body.innerHTML = '<tr><td colspan="6" class="p-10 text-center text-slate-400 font-bold italic uppercase text-xs">Belum ada data rekapan.</td></tr>';
+                return;
+            }
+
+            dataToRender.forEach(inv => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-green-50/30 transition-all cursor-pointer group";
+                tr.onclick = (e) => { if(!e.target.closest('button')) previewInvoice(inv.noInv); };
+                
+                tr.innerHTML = `
+                    <td class="p-4 text-slate-400 font-bold text-[11px]">${new Date(inv.tanggal).toLocaleDateString('id-ID')}</td>
+                    <td class="p-4 font-black text-slate-800 text-sm italic tracking-tighter">${inv.noInv}</td>
+                    <td class="p-4 font-black text-slate-800 uppercase text-xs">${inv.nama}</td>
+                    <td class="p-4 text-right font-black text-slate-900 text-sm">Rp ${inv.total.toLocaleString('id-ID')}</td>
+                    <td class="p-4 text-center">
+                        <span class="status-pill ${inv.status === 'Lunas' ? 'lunas' : 'belum-lunas'}">${inv.status}</span>
+                    </td>
+                    <td class="p-4 text-right flex justify-end gap-2">
+                        <button onclick="toggleStatus('${inv.noInv}', '${inv.status}')" class="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase hover:bg-slate-200 transition-colors">Bayar?</button>
+                        <button onclick="previewInvoice('${inv.noInv}')" class="bg-green-700 text-white px-3 py-1.5 rounded-lg text-[10px] font-black uppercase shadow-sm hover:shadow-green-200 transition-all">Cetak</button>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        function filterHistory() {
+            const q = document.getElementById('search').value.toLowerCase();
+            const filtered = Object.values(groupedInvoices).filter(i => 
+                i.noInv.toString().toLowerCase().includes(q) || 
+                i.nama.toLowerCase().includes(q)
+            ).reverse();
+            renderTable(filtered);
+        }
+
+        async function toggleStatus(noInv, currentStatus) {
+            const newStatus = currentStatus === 'Lunas' ? 'Belum Lunas' : 'Lunas';
+            if(!confirm(`Ubah status invoice ${noInv} menjadi ${newStatus}?`)) return;
+
+            if(!scriptUrl) return alert("URL Database belum diset!");
+
+            fetch(scriptUrl, { 
+                method: 'POST', 
+                mode: 'no-cors', 
+                body: JSON.stringify({ action: 'updateStatus', noInvoice: noInv, newStatus: newStatus }) 
+            });
+            
+            alert("Sedang memproses... Data akan diperbarui otomatis.");
+            setTimeout(fetchHistory, 1500);
+        }
+
+        function previewInvoice(noInv) {
+            const inv = groupedInvoices[noInv];
+            const view = document.getElementById('invoice-view');
+            const cust = customersDB.find(c => c[0] === inv.nama) || ["-", "-", "-", "-"];
+
+            view.innerHTML = `
+                <div class="print-area text-slate-800">
+                    <div class="flex justify-between border-b-4 border-green-700 pb-5 mb-8">
+                        <div>
+                            <h2 class="text-xl font-black text-green-800 uppercase tracking-tighter">Jauhari Mitra Pangan</h2>
+                            <p class="text-[10px] font-bold italic text-slate-500">“Asli Parakansalak, Segarnya Gak Pake Jarak.”</p>
+                        </div>
+                        <div class="text-right">
+                            <h1 class="text-3xl font-black uppercase leading-none">Invoice</h1>
+                            <p class="font-mono font-black text-xs text-slate-400 mt-1">#${inv.noInv}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-10 mb-8 text-[12px]">
+                        <div>
+                            <p class="text-[9px] font-black text-green-700 uppercase tracking-widest mb-1">Tagihan Untuk:</p>
+                            <p class="text-lg font-black uppercase text-slate-900 leading-tight">${inv.nama}</p>
+                            <p class="text-slate-500 leading-relaxed mt-1">${cust[1] || 'Alamat tidak ditemukan'}</p>
+                            <p class="font-black text-green-700 mt-2 bg-green-50 px-2 py-1 rounded inline-block border border-green-100">${cust[3] || '-'}</p>
+                        </div>
+                        <div class="text-right flex flex-col items-end">
+                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Tanggal Terbit:</p>
+                            <p class="text-base font-black text-slate-800">${new Date(inv.tanggal).toLocaleDateString('id-ID')}</p>
+                            <div class="mt-4 status-pill ${inv.status === 'Lunas' ? 'lunas' : 'belum-lunas'} inline-block px-5 py-1.5 shadow-sm">STATUS: ${inv.status}</div>
+                        </div>
+                    </div>
+
+                    <table class="w-full mb-8 border-collapse">
+                        <thead class="bg-green-700 text-white">
+                            <tr class="text-[10px] uppercase font-black tracking-widest">
+                                <th class="p-3 pl-4 rounded-tl-xl">Item Produk</th>
+                                <th class="p-3 text-center w-24">Jumlah</th>
+                                <th class="p-3 text-right w-36">Harga Satuan</th>
+                                <th class="p-3 text-right pr-4 w-36 rounded-tr-xl">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody class="border-x divide-y">
+                            ${inv.items.map(i => `
+                                <tr>
+                                    <td class="p-3 pl-4 font-bold text-slate-800">${i.nama}</td>
+                                    <td class="p-3 text-center text-slate-600">${i.qty} ${i.satuan}</td>
+                                    <td class="p-3 text-right text-slate-600 font-medium text-[11px]">Rp ${Number(i.harga).toLocaleString('id-ID')}</td>
+                                    <td class="p-3 text-right pr-4 font-black text-slate-900 italic">Rp ${Number(i.subtotal).toLocaleString('id-ID')}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                        <tfoot class="border-t-4 border-green-700 bg-slate-50">
+                            <tr>
+                                <td colspan="3" class="p-4 text-right font-black uppercase text-[10px] text-slate-500 tracking-widest">Grand Total</td>
+                                <td class="p-4 text-right pr-4 text-2xl font-black text-green-800 italic">Rp ${inv.total.toLocaleString('id-ID')}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div class="grid grid-cols-2 gap-10 items-end mt-12">
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-[10px] text-slate-500 leading-relaxed italic">
+                            <strong class="text-slate-700 uppercase tracking-widest block mb-1">Informasi:</strong>
+                            1. Transfer BCA a/n Johan Jauharudin.<br>
+                            2. Produk segar langsung dari Parakansalak.<br>
+                            3. Pastikan cek kondisi barang saat diterima.
+                        </div>
+                        <div class="text-center w-56 ml-auto">
+                            <p class="text-[10px] font-black text-slate-400 mb-16 uppercase tracking-tighter">Hormat Kami,</p>
+                            <p class="font-black border-b-2 border-slate-800 pb-1 uppercase tracking-tighter text-base text-green-800">Johan Jauharudin</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('print-modal').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
