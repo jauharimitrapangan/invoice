@@ -17,7 +17,6 @@
 </head>
 <body class="bg-slate-100 min-h-screen">
 
-    <!-- Header Navigation -->
     <header class="bg-green-800 text-white shadow-lg no-print sticky top-0 z-50">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
@@ -28,10 +27,9 @@
                     <h1 class="font-black text-lg uppercase tracking-tighter">Jauhari Mitra Pangan</h1>
                 </div>
                 <button onclick="openSettings()" class="p-2 hover:bg-green-700 rounded-full transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.066-2.573z" /></svg>
                 </button>
             </div>
-            <!-- Menu Tabs -->
             <div class="flex gap-8 text-xs font-bold uppercase tracking-widest pb-1">
                 <button id="btn-tab-invoice" onclick="switchTab('invoice')" class="pb-3 px-2 tab-active">Buat Invoice</button>
                 <button id="btn-tab-history" onclick="switchTab('history')" class="pb-3 px-2">Riwayat & Status</button>
@@ -41,7 +39,6 @@
 
     <!-- KONTEN: BUAT INVOICE -->
     <main id="section-invoice" class="container mx-auto p-4 md:p-6 flex flex-col lg:flex-row gap-6">
-        <!-- (Kode Form Input Invoice Akang yang lama ada di sini secara otomatis) -->
         <div class="lg:w-1/3 space-y-4 no-print">
             <div class="bg-white rounded-2xl shadow-sm p-5 border border-slate-200">
                 <h3 class="font-bold text-slate-700 mb-4 flex items-center gap-2">
@@ -69,30 +66,23 @@
                     <span class="bg-green-600 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs">2</span> Daftar Pesanan
                 </h3>
                 <div id="items-list" class="space-y-3">
-                    <div class="item-row p-3 bg-slate-50 rounded-xl border border-slate-100 relative group">
-                        <input type="text" placeholder="Nama Produk" class="i-name w-full mb-2 p-1 border-b bg-transparent text-sm font-bold outline-none" oninput="updatePreview()">
-                        <div class="flex gap-2">
-                            <input type="number" placeholder="Qty" class="i-qty w-1/4 p-1 border-b bg-transparent text-sm outline-none" oninput="calculate()">
-                            <select class="i-satuan w-1/4 p-1 border-b bg-transparent text-[10px] outline-none font-bold" onchange="updatePreview()">
-                                <option value="Kg">Kg</option><option value="Pcs">Pcs</option><option value="Iket">Iket</option><option value="Liter">Liter</option>
-                            </select>
-                            <input type="number" placeholder="Harga" class="i-price w-2/4 p-1 border-b bg-transparent text-sm outline-none text-right font-bold" oninput="calculate()">
-                        </div>
-                    </div>
+                    <!-- Row Item -->
                 </div>
                 <button onclick="addItem()" class="w-full mt-3 py-2 border-2 border-dashed border-slate-200 rounded-xl text-[10px] text-slate-400 font-black tracking-widest hover:border-green-300 hover:text-green-600 transition-all uppercase">+ Tambah Barang</button>
             </div>
 
-            <button onclick="saveToSheet()" id="btn-save" class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 tracking-widest text-sm uppercase">
-                Simpan & Cetak
-            </button>
+            <div class="flex flex-col gap-2">
+                <button onclick="saveToSheet()" id="btn-save" class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-4 rounded-2xl shadow-lg transition-all flex items-center justify-center gap-2 tracking-widest text-sm uppercase">
+                    Simpan & Cetak
+                </button>
+                <button id="btn-cancel-edit" onclick="resetForm()" class="w-full bg-slate-200 text-slate-600 font-bold py-2 rounded-xl text-[10px] uppercase hidden">Batal Edit / Reset</button>
+            </div>
             <p id="status-msg" class="text-center text-[10px] font-bold uppercase text-slate-400 italic"></p>
         </div>
 
         <!-- Preview Invoice -->
         <div class="lg:w-2/3">
             <div id="invoice-preview-area" class="print-area bg-white p-8 md:p-12 shadow-2xl rounded-2xl border border-slate-200 min-h-[1100px] flex flex-col relative overflow-hidden">
-                <!-- Watermark -->
                 <div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none rotate-[-30deg]"><h1 class="text-[120px] font-black">JAUHARI</h1></div>
                 <div id="invoice-content-render"></div>
             </div>
@@ -104,18 +94,12 @@
         <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
             <div class="p-6 border-b flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
                 <div class="relative w-full md:w-96">
-                    <input type="text" id="search-history" oninput="filterHistory()" placeholder="Cari Pelanggan / No Inv..." class="w-full pl-10 pr-4 py-2 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-green-500 outline-none">
-                    <svg class="w-4 h-4 absolute left-3 top-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input type="text" id="search-history" oninput="filterHistoryLocal()" placeholder="Cari Pelanggan / No Inv..." class="w-full pl-10 pr-4 py-2 rounded-2xl border border-slate-200 text-sm focus:ring-2 focus:ring-green-500 outline-none">
+                    <svg class="w-4 h-4 absolute left-3 top-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
-                <div class="flex gap-4">
-                    <div class="text-right">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Terkumpul</p>
-                        <p class="text-lg font-black text-green-700" id="hist-total-amount">Rp 0</p>
-                    </div>
-                    <button onclick="fetchHistory()" class="bg-green-700 text-white p-3 rounded-2xl hover:bg-green-800 transition-all shadow-lg shadow-green-100">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                    </button>
-                </div>
+                <button onclick="fetchHistory()" class="bg-green-700 text-white p-3 rounded-2xl hover:bg-green-800 shadow-lg shadow-green-100">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </button>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
@@ -129,61 +113,40 @@
                             <th class="p-5 text-right">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="history-table-body" class="divide-y divide-slate-100">
-                        <!-- Data Masuk Ke Sini -->
-                    </tbody>
+                    <tbody id="history-table-body" class="divide-y divide-slate-100"></tbody>
                 </table>
             </div>
-            <div id="hist-loading" class="p-20 text-center flex flex-col items-center gap-3">
-                <div class="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin"></div>
-                <p class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">Sinkronisasi Google Sheets...</p>
-            </div>
+            <div id="hist-loading" class="p-20 text-center"><div class="w-8 h-8 border-4 border-green-200 border-t-green-700 rounded-full animate-spin mx-auto"></div></div>
         </div>
     </main>
 
-    <!-- Settings Modal -->
+    <!-- Settings & Modal -->
     <div id="settings-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden no-print flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl">
-            <h2 class="text-xl font-black mb-2 uppercase tracking-tighter">Sinkronisasi Database</h2>
-            <p class="text-xs text-slate-400 mb-6 font-medium">Tempel URL Web App (/exec) dari Google Apps Script Akang.</p>
-            <input type="text" id="script-url-input" class="w-full border-2 border-slate-100 p-3 rounded-xl mb-6 outline-none focus:border-green-500 text-sm font-mono" placeholder="https://script.google.com/macros/s/...">
+        <div class="bg-white rounded-3xl p-8 w-full max-w-md">
+            <h2 class="text-xl font-black mb-2 uppercase">Database</h2>
+            <input type="text" id="script-url-input" class="w-full border p-3 rounded-xl mb-6 text-sm" placeholder="Paste Apps Script URL">
             <div class="flex gap-3">
-                <button onclick="saveSettings()" class="flex-1 bg-green-600 text-white py-3 rounded-xl font-bold uppercase tracking-widest text-xs">Simpan & Hubungkan</button>
+                <button onclick="saveSettings()" class="flex-1 bg-green-600 text-white py-3 rounded-xl font-bold uppercase text-xs">Simpan</button>
                 <button onclick="closeSettings()" class="px-6 py-3 text-slate-400 font-bold text-xs uppercase">Batal</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Cetak Ulang -->
-    <div id="print-modal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden no-print p-4 overflow-y-auto">
-        <div class="bg-white w-full max-w-2xl mx-auto rounded-3xl shadow-2xl relative">
-            <div class="sticky top-0 bg-white p-5 border-b flex justify-between items-center rounded-t-3xl z-10">
-                <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Cetak Ulang</span>
-                <div class="flex gap-2">
-                    <button onclick="window.print()" class="bg-green-700 text-white px-4 py-2 rounded-xl text-xs font-black uppercase">Cetak Sekarang</button>
-                    <button onclick="closePrintModal()" class="bg-slate-100 p-2 rounded-xl text-slate-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg></button>
-                </div>
-            </div>
-            <div id="print-view-content" class="p-10 bg-white"></div>
-        </div>
-    </div>
-
     <script>
         let scriptUrl = localStorage.getItem('jmp_url_final') || "";
-        let allInvoices = [];
+        let allInvoicesRaw = [];
         let customersDB = [];
-        let activeTab = 'invoice';
+        let isEditMode = false;
+        let currentEditingStatus = "Belum Lunas";
 
         window.onload = () => {
             document.getElementById('inv-date').valueAsDate = new Date();
             if(!scriptUrl) openSettings();
-            else fetchCustomers();
+            else { fetchCustomers(); addItem(); }
             updatePreview();
         };
 
-        // NAVIGATION LOGIC
         function switchTab(tab) {
-            activeTab = tab;
             document.getElementById('section-invoice').classList.toggle('hidden', tab !== 'invoice');
             document.getElementById('section-history').classList.toggle('hidden', tab !== 'history');
             document.getElementById('btn-tab-invoice').classList.toggle('tab-active', tab === 'invoice');
@@ -191,7 +154,6 @@
             if(tab === 'history') fetchHistory();
         }
 
-        // SETTINGS LOGIC
         function openSettings() { document.getElementById('settings-modal').classList.remove('hidden'); }
         function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
         function saveSettings() {
@@ -199,7 +161,6 @@
             if(url) { localStorage.setItem('jmp_url_final', url); location.reload(); }
         }
 
-        // DATABASE LOGIC (FETCH)
         async function fetchCustomers() {
             try {
                 const res = await fetch(`${scriptUrl}?action=getPelanggan`);
@@ -210,7 +171,7 @@
                     const opt = document.createElement('option');
                     opt.value = i; opt.text = c[0]; select.appendChild(opt);
                 });
-            } catch(e) { console.log("Offline Mode"); }
+            } catch(e) {}
         }
 
         async function fetchHistory() {
@@ -219,28 +180,29 @@
             try {
                 const res = await fetch(`${scriptUrl}?action=getHistory`);
                 const data = await res.json();
-                allInvoices = data.invoices || [];
+                allInvoicesRaw = data.invoices || [];
                 renderHistoryTable();
-            } catch(e) { alert("Gagal mengambil data. Cek koneksi."); }
+            } catch(e) {}
             loader.classList.add('hidden');
         }
 
-        // INVOICE CREATION LOGIC
-        function addItem() {
+        function addItem(data = null) {
             const list = document.getElementById('items-list');
             const div = document.createElement('div');
             div.className = 'item-row p-3 bg-slate-50 rounded-xl border border-slate-100 relative group';
             div.innerHTML = `
-                <input type="text" placeholder="Nama Produk" class="i-name w-full mb-2 p-1 border-b bg-transparent text-sm font-bold outline-none" oninput="updatePreview()">
+                <input type="text" placeholder="Nama Produk" class="i-name w-full mb-2 p-1 border-b bg-transparent text-sm font-bold outline-none" oninput="updatePreview()" value="${data ? data.nama : ''}">
                 <div class="flex gap-2">
-                    <input type="number" placeholder="Qty" class="i-qty w-1/4 p-1 border-b bg-transparent text-sm outline-none" oninput="calculate()">
+                    <input type="number" placeholder="Qty" class="i-qty w-1/4 p-1 border-b bg-transparent text-sm outline-none" oninput="calculate()" value="${data ? data.qty : ''}">
                     <select class="i-satuan w-1/4 p-1 border-b bg-transparent text-[10px] outline-none font-bold" onchange="updatePreview()">
-                        <option value="Kg">Kg</option><option value="Pcs">Pcs</option><option value="Iket">Iket</option><option value="Liter">Liter</option>
+                        <option value="Kg" ${data && data.satuan === 'Kg' ? 'selected' : ''}>Kg</option>
+                        <option value="Pcs" ${data && data.satuan === 'Pcs' ? 'selected' : ''}>Pcs</option>
+                        <option value="Iket" ${data && data.satuan === 'Iket' ? 'selected' : ''}>Iket</option>
+                        <option value="Liter" ${data && data.satuan === 'Liter' ? 'selected' : ''}>Liter</option>
                     </select>
-                    <input type="number" placeholder="Harga" class="i-price w-2/4 p-1 border-b bg-transparent text-sm outline-none text-right font-bold" oninput="calculate()">
+                    <input type="number" placeholder="Harga" class="i-price w-2/4 p-1 border-b bg-transparent text-sm outline-none text-right font-bold" oninput="calculate()" value="${data ? data.harga : ''}">
                 </div>
-                <button onclick="this.parentElement.remove(); updatePreview();" class="absolute -right-2 -top-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg></button>
-            `;
+                <button onclick="this.parentElement.remove(); updatePreview();" class="absolute -right-2 -top-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg></button>`;
             list.appendChild(div);
         }
 
@@ -261,9 +223,9 @@
         function generateInvoiceHTML(noInv, tanggal, nama, alamat, hp, items, status) {
             let total = 0;
             const rows = items.map(item => {
-                const sub = item.qty * item.harga;
+                const sub = (item.qty || 0) * (item.harga || 0);
                 total += sub;
-                return `<tr><td class="p-3 font-bold">${item.nama}</td><td class="p-3 text-center">${item.qty} ${item.satuan}</td><td class="p-3 text-right">Rp ${Number(item.harga).toLocaleString('id-ID')}</td><td class="p-3 text-right font-black italic">Rp ${sub.toLocaleString('id-ID')}</td></tr>`;
+                return `<tr><td class="p-3 font-bold">${item.nama || '-'}</td><td class="p-3 text-center">${item.qty || 0} ${item.satuan}</td><td class="p-3 text-right">Rp ${Number(item.harga || 0).toLocaleString('id-ID')}</td><td class="p-3 text-right font-black italic">Rp ${sub.toLocaleString('id-ID')}</td></tr>`;
             }).join('');
 
             return `
@@ -274,7 +236,7 @@
                     </div>
                     <div class="grid grid-cols-2 gap-10 mb-8 text-[12px]">
                         <div><p class="text-[9px] font-black text-green-700 uppercase tracking-widest mb-1">Tagihan Untuk:</p><p class="text-lg font-black uppercase text-slate-900 leading-tight">${nama || 'Nama Pelanggan'}</p><p class="text-slate-500 leading-relaxed mt-1">${alamat || '-'}</p><p class="font-black text-green-700 mt-2 bg-green-50 px-2 py-1 rounded inline-block border border-green-100">${hp || '-'}</p></div>
-                        <div class="text-right flex flex-col items-end"><p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Tanggal Terbit:</p><p class="text-base font-black text-slate-800">${new Date(tanggal).toLocaleDateString('id-ID')}</p><div class="mt-4 status-pill ${status === 'Lunas' ? 'lunas' : 'belum-lunas'} inline-block px-5 py-1.5 shadow-sm">STATUS: ${status}</div></div>
+                        <div class="text-right flex flex-col items-end"><p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Tanggal Terbit:</p><p class="text-base font-black text-slate-800">${new Date(tanggal).toLocaleDateString('id-ID')}</p><div class="mt-4 status-pill ${status === 'Lunas' ? 'lunas' : 'belum-lunas'} inline-block px-5 py-1.5 shadow-sm font-black italic border">STATUS: ${status}</div></div>
                     </div>
                     <table class="w-full mb-8 border-collapse">
                         <thead class="bg-green-700 text-white"><tr class="text-[10px] uppercase font-black"><th class="p-3 pl-4 rounded-tl-xl text-left">Item</th><th class="p-3 text-center">Qty</th><th class="p-3 text-right">Harga</th><th class="p-3 text-right pr-4 rounded-tr-xl">Subtotal</th></tr></thead>
@@ -282,7 +244,7 @@
                         <tfoot class="border-t-4 border-green-700 bg-slate-50"><tr><td colspan="3" class="p-4 text-right font-black uppercase text-[10px] text-slate-500">Grand Total</td><td class="p-4 text-right pr-4 text-2xl font-black text-green-800 italic">Rp ${total.toLocaleString('id-ID')}</td></tr></tfoot>
                     </table>
                     <div class="grid grid-cols-2 gap-10 items-end mt-12">
-                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-[10px] text-slate-500 leading-relaxed italic"><strong>Info:</strong> Transfer BCA a/n Johan Jauharudin. Produk segar tangan pertama Parakansalak.</div>
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-[10px] text-slate-500 leading-relaxed italic"><strong>Info:</strong> Transfer BCA a/n Johan Jauharudin.<br>Produk segar tangan pertama dari Parakansalak.</div>
                         <div class="text-center w-56 ml-auto"><p class="text-[10px] font-black text-slate-400 mb-16 uppercase">Hormat Kami,</p><p class="font-black border-b-2 border-slate-800 pb-1 uppercase tracking-tighter text-base text-green-800">Johan Jauharudin</p></div>
                     </div>
                 </div>`;
@@ -302,7 +264,7 @@
                 document.getElementById('m-alamat').value,
                 document.getElementById('m-hp').value,
                 items,
-                "Belum Lunas"
+                isEditMode ? currentEditingStatus : "Belum Lunas"
             );
         }
 
@@ -325,25 +287,43 @@
                 alamat: document.getElementById('m-alamat').value,
                 email: document.getElementById('m-email').value,
                 hp: document.getElementById('m-hp').value,
-                items: items
+                items: items,
+                isEdit: isEditMode,
+                status: isEditMode ? currentEditingStatus : "Belum Lunas"
             };
 
             try {
                 await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-                status.innerText = "BERHASIL DISIMPAN!";
+                status.innerText = isEditMode ? "BERHASIL DIUPDATE!" : "BERHASIL DISIMPAN!";
                 window.print();
+                if(isEditMode) resetForm();
             } catch(e) { status.innerText = "GAGAL SIMPAN!"; }
             btn.disabled = false;
         }
 
-        // HISTORY TAB LOGIC
+        function resetForm() {
+            isEditMode = false;
+            currentEditingStatus = "Belum Lunas";
+            document.getElementById('inv-no').value = "";
+            document.getElementById('inv-no').disabled = false;
+            document.getElementById('btn-save').innerText = "Simpan & Cetak";
+            document.getElementById('btn-cancel-edit').classList.add('hidden');
+            document.getElementById('items-list').innerHTML = "";
+            document.getElementById('m-nama').value = "";
+            document.getElementById('m-alamat').value = "";
+            document.getElementById('m-hp').value = "";
+            document.getElementById('m-email').value = "";
+            addItem();
+            updatePreview();
+        }
+
+        // RIWAYAT & EDIT LOGIC
         function renderHistoryTable(filterData = null) {
             const body = document.getElementById('history-table-body');
             body.innerHTML = "";
             
-            // Grouping data
             const grouped = {};
-            allInvoices.forEach(row => {
+            allInvoicesRaw.forEach(row => {
                 if(!row[0]) return;
                 if(!grouped[row[0]]) grouped[row[0]] = { no: row[0], tgl: row[1], nama: row[2], total: 0, status: row[8], items: [] };
                 grouped[row[0]].total += parseFloat(row[7]);
@@ -351,12 +331,10 @@
             });
 
             const items = filterData || Object.values(grouped).reverse();
-            let grandAmount = 0;
 
             items.forEach(inv => {
-                grandAmount += inv.total;
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition-all cursor-pointer";
+                tr.className = "hover:bg-slate-50 transition-all";
                 tr.innerHTML = `
                     <td class="p-5 text-slate-400 font-bold text-[11px]">${new Date(inv.tgl).toLocaleDateString('id-ID')}</td>
                     <td class="p-5 font-black text-slate-800 text-sm italic">#${inv.no}</td>
@@ -364,45 +342,66 @@
                     <td class="p-5 text-right font-black text-slate-900 text-sm italic">Rp ${inv.total.toLocaleString('id-ID')}</td>
                     <td class="p-5 text-center"><span class="status-pill ${inv.status === 'Lunas' ? 'lunas' : 'belum-lunas'}">${inv.status}</span></td>
                     <td class="p-5 text-right flex justify-end gap-2">
-                        <button onclick="updateStatus('${inv.no}', '${inv.status}')" class="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl text-[9px] font-black uppercase hover:bg-slate-200">Update</button>
-                        <button onclick="reprintInvoice('${inv.no}')" class="bg-green-700 text-white px-3 py-1.5 rounded-xl text-[9px] font-black uppercase shadow-lg shadow-green-100">Cetak</button>
+                        <button onclick="updateStatus('${inv.no}', '${inv.status}')" class="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase">Bayar?</button>
+                        <button onclick="prepareEdit('${inv.no}')" class="bg-yellow-100 text-yellow-700 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase hover:bg-yellow-200">Edit</button>
                     </td>`;
-                tr.onclick = (e) => { if(!e.target.closest('button')) reprintInvoice(inv.no); };
                 body.appendChild(tr);
             });
-            document.getElementById('hist-total-amount').innerText = "Rp " + grandAmount.toLocaleString('id-ID');
         }
 
-        function filterHistory() {
+        function filterHistoryLocal() {
             const q = document.getElementById('search-history').value.toLowerCase();
-            // (Logika filter sama seperti sebelumnya...)
-            fetchHistory(); // Sederhananya panggil fetch ulang atau filter lokal
+            const grouped = {};
+            allInvoicesRaw.forEach(row => {
+                if(!row[0]) return;
+                if(!grouped[row[0]]) grouped[row[0]] = { no: row[0], tgl: row[1], nama: row[2], total: 0, status: row[8], items: [] };
+                grouped[row[0]].total += parseFloat(row[7]);
+                grouped[row[0]].items.push({ nama: row[3], qty: row[4], satuan: row[5], harga: row[6], subtotal: row[7] });
+            });
+            const filtered = Object.values(grouped).filter(i => i.no.toString().toLowerCase().includes(q) || i.nama.toLowerCase().includes(q)).reverse();
+            renderTable(filtered);
+        }
+
+        function prepareEdit(noInv) {
+            const grouped = {};
+            allInvoicesRaw.forEach(row => {
+                if(!grouped[row[0]]) grouped[row[0]] = { no: row[0], tgl: row[1], nama: row[2], total: 0, status: row[8], items: [] };
+                grouped[row[0]].items.push({ nama: row[3], qty: row[4], satuan: row[5], harga: row[6] });
+            });
+            const inv = grouped[noInv];
+            if(!inv) return;
+
+            isEditMode = true;
+            currentEditingStatus = inv.status;
+            
+            // Cari alamat di database pelanggan
+            const cust = customersDB.find(c => c[0] === inv.nama) || ["", "", "", ""];
+
+            document.getElementById('inv-no').value = inv.no;
+            document.getElementById('inv-no').disabled = true; // No invoice tidak boleh diubah saat edit
+            document.getElementById('inv-date').value = new Date(inv.tgl).toISOString().split('T')[0];
+            document.getElementById('m-nama').value = inv.nama;
+            document.getElementById('m-alamat').value = cust[1];
+            document.getElementById('m-email').value = cust[2];
+            document.getElementById('m-hp').value = cust[3];
+
+            document.getElementById('items-list').innerHTML = "";
+            inv.items.forEach(item => addItem(item));
+
+            document.getElementById('btn-save').innerText = "Update & Cetak";
+            document.getElementById('btn-cancel-edit').classList.remove('hidden');
+            
+            switchTab('invoice');
+            updatePreview();
         }
 
         async function updateStatus(noInv, current) {
             const next = current === 'Lunas' ? 'Belum Lunas' : 'Lunas';
             if(!confirm(`Ubah status #${noInv} jadi ${next}?`)) return;
             await fetch(scriptUrl, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ action: 'updateStatus', noInvoice: noInv, newStatus: next }) });
-            alert("Memperbarui status...");
+            alert("Memperbarui...");
             setTimeout(fetchHistory, 1500);
         }
-
-        function reprintInvoice(noInv) {
-            // Find in local data
-            const allGrouped = {};
-            allInvoices.forEach(row => {
-                if(!allGrouped[row[0]]) allGrouped[row[0]] = { no: row[0], tgl: row[1], nama: row[2], total: 0, status: row[8], items: [] };
-                allGrouped[row[0]].total += parseFloat(row[7]);
-                allGrouped[row[0]].items.push({ nama: row[3], qty: row[4], satuan: row[5], harga: row[6], subtotal: row[7] });
-            });
-            const inv = allGrouped[noInv];
-            const cust = customersDB.find(c => c[0] === inv.nama) || ["", "", "", ""];
-            
-            document.getElementById('print-view-content').innerHTML = generateInvoiceHTML(inv.no, inv.tgl, inv.nama, cust[1], cust[3], inv.items, inv.status);
-            document.getElementById('print-modal').classList.remove('hidden');
-        }
-
-        function closePrintModal() { document.getElementById('print-modal').classList.add('hidden'); }
     </script>
 </body>
 </html>
